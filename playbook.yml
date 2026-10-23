@@ -1,5 +1,5 @@
 - name: Install and configure Redis
-  hosts: localhost
+  hosts: all
   become: true
   vars_files:
     - secrets.yml
