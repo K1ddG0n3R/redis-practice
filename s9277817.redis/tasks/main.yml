@@ -10,10 +10,13 @@
   block:
   - name: Create Redis data dir
     file:
-      path: /var/lib/redis
+      path: {{ redis_data_dir }}
+      state: directory
       owner: redis
       group: redis
       mode: '0755'
+    notify:
+      - Enable and start Redis
   when: redis_dir_exists.stat.exists == false
 
 - name: Template Redis config
@@ -24,5 +27,5 @@
     group: redis
     mode: '0640'
   notify:
-    - Enable and start Redis
+    - Restart Redis
 
