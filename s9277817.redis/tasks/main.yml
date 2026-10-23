@@ -1,0 +1,28 @@
+- name: Install Redis
+  include_tasks: install/redis_installation.yml
+
+- name: Check Redis data dir is exists
+  stat:
+    path: {{ redis_data_dir }}
+  register: redis_dir_exists
+
+- name: Create Redis data dir if not exists
+  block:
+  - name: Create Redis data dir
+    file:
+      path: /var/lib/redis
+      owner: redis
+      group: redis
+      mode: '0755'
+  when: redis_dir_exists.stat.exists == false
+
+- name: Template Redis config
+  template:
+    src: redis.conf.j2
+    dest: /etc/redis/redis.conf
+    owner: root
+    group: redis
+    mode: '0640'
+  notify:
+    - Enable and start Redis
+

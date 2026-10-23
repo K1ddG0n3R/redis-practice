@@ -1,0 +1,5 @@
+port {{ redis_config_port | default(6379) }}
+dir {{ redis_data_dir | default('/var/lib/redis') }}
+databases {{ redis_config_databases_count | default(16) }}
+requirepass {{ redis_password }}
+appendonly {{ redis_config_appendonly | default('yes') }}

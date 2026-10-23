@@ -1,0 +1,7 @@
+- name: Install and configure Redis
+  hosts: localhost
+  become: true
+  vars_files:
+    - secrets.yml
+  roles:
+    - s9277817.redis

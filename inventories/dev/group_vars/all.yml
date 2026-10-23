@@ -1,0 +1,4 @@
+redis_config_port: 6380
+redis_config_databases_count: 4
+redis_data_dir: /mnt/redis
+redis_config_appendonly: no

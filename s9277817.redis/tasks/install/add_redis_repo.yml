@@ -1,0 +1,23 @@
+- name: Check redis gpg keyring exists
+  stat:
+    path: /usr/share/keyrings/redis-archive-keyring.gpg
+  register: gpg_keyring_exists
+
+- name: Check redis gpg link correct
+  uri:
+    url: https://packages.redis.io/gpg
+    method: HEAD
+    return_content: false
+  register: link_correct
+
+- name: Get redis gpg keyring if not exists
+  block:
+    - name: Get redis gpg keyring
+      import_tasks: add_redis_gpg_keyring.yml
+  when: gpg_keyring_exists.stat.exists == false and link_correct.status == 200 and ansible_os_family == "Debian"
+
+- name: Add redis apt-repository
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb {{ ansible_distribution_release}} main"
+    filename: redis
+  become: yes

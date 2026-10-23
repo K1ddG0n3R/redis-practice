@@ -1,0 +1,28 @@
+- name: Check redis installed
+  command: which redis-server
+  register: redis_installed
+  ignore_errors: yes
+
+- name: Check packages installed
+  command: which curl gpg
+  register: packages_installed
+  ignore_errors: yes
+
+- name: Install packages if not installed
+  block:
+  - name: Install packages
+    apt:
+      pkg:
+      - curl
+      - gpg
+      update_cache: yes
+  when: packages_installed.rc != 0 and ansible_os_family == "Debian"
+
+- name: Add redis APT repository
+  include_tasks: add_redis_repo.yml
+
+- name: Install redis if not installed
+  apt:
+    name: redis
+    update_cache: yes
+  when: redis_installed.rc != 0 and ansible_os_family == "Debian"

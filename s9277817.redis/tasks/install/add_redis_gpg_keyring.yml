@@ -1,0 +1,12 @@
+- name: Download redis gpg keyring
+  uri:
+    url: https://packages.redis.io/gpg
+    follow_redirects: all
+    return_content: true
+  register: redis_gpg_keyring
+
+- name: Save keyring into file
+  command:
+    cmd: gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+    stdin: "{{ redis_gpg_keyring.content }}"
+    creates: /usr/share/keyrings/redis-archive-keyring.gpg
